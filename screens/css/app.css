@@ -1,0 +1,12 @@
+@import "./base.css";
+
+body {
+  color: #fff;
+}
+
+p {
+  font-size: 0.6rem;
+  word-break: break-all;
+  margin-bottom: 0.2rem;
+  line-height: 1.5;
+}

@@ -1,0 +1,22 @@
+@import "./base.css";
+
+.input-container {
+  margin-top: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 1rem;
+}
+
+.input-container > p {
+  font-size: 1.2rem;
+}
+
+.input-container > input {
+  width: 100%;
+  margin-top: 0.2rem;
+  padding: 0.25rem;
+  border-radius: 0.4rem;
+  border: 1px solid #999;
+  box-shadow: none;
+  outline: 0;
+}
