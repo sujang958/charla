@@ -4,7 +4,7 @@ const createChatWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 400,
-    frame: true,
+    frame: false,
     transparent: true,
     webPreferences: {
       nodeIntegration: true,
