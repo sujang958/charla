@@ -29,8 +29,8 @@
       }
 
       const storeUser = ({ token, channel }) => {
-        storeToken()
-        storeChannel()
+        storeToken(token)
+        storeChannel(channel)
       }
 
       const storeToken = (token) => localStorage.setItem("token", token)
@@ -42,15 +42,26 @@
         storeUser({ token, channel })
       }
 
+      const validateStoredUser = async () => {
+        const token = localStorage.getItem("token")
+        const headers = new Headers()
+        headers.append("Authorization", `OAuth ${token}`)
+
+        const res = await fetch("https://id.twitch.tv/oauth2/validate", {
+          headers,
+        })
+        const data = await res.json()
+
+        if ("message" in data) return false
+
+        return true
+      }
+
       const init = async () => {
-        let token = localStorage.getItem("token")
-        let channel = localStorage.getItem("channel")
+        if (!(await validateStoredUser())) await refreshUser()
 
-        if (!token) await refreshUser()
-        else if (!channel) storeChannel(await getChannel(token))
-
-        token = localStorage.getItem("token")
-        channel = localStorage.getItem("channel")
+        const token = localStorage.getItem("token")
+        const channel = localStorage.getItem("channel")
 
         client = new Client({
           channels: [channel],
