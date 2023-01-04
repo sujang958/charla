@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsc && electron .",
     "format": "prettier ./src ./screens/**/*.{css,html}",
-    "build": "electron-builder --win --x64"
+    "build": "tsc && electron-builder --win --x64"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
