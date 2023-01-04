@@ -4,11 +4,97 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/app.css" />
     <title>Charla</title>
   </head>
   <body>
-    <p>&lt;omom1972&gt;: 할로할로</p>
-    <p>&lt;omom1972&gt;: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Maxime laboriosam, vero repudiandae harum veniam eveniet, quam reprehenderit sit, consequuntur adipisci beatae aut eligendi rem obcaecati quo! Ullam tempore expedita similique. Provident sint vitae repellat illo, soluta eum praesentium vero. Quo odio corrupti minus, doloribus nostrum modi natus! Minima, veritatis eos?</p>
+    <p id="loading-text">&lt;omom1972&gt;: 로딩중...</p>
+
+    <script>
+      const { ipcRenderer } = require("electron")
+      const { Client } = require("tmi.js")
+
+      let client = null
+
+      const getChannel = async (token) => {
+        const headers = new Headers()
+        headers.append("Authorization", `OAuth ${token}`)
+
+        const res = await fetch("https://id.twitch.tv/oauth2/validate", {
+          headers,
+        })
+        const data = await res.json()
+
+        return data.login
+      }
+
+      const storeUser = ({ token, channel }) => {
+        storeToken()
+        storeChannel()
+      }
+
+      const storeToken = (token) => localStorage.setItem("token", token)
+      const storeChannel = (channel) => localStorage.setItem("channel", channel)
+
+      const refreshUser = async () => {
+        const token = await ipcRenderer.invoke("sign-in")
+        const channel = await getChannel(token)
+        storeUser({ token, channel })
+      }
+
+      const init = async () => {
+        let token = localStorage.getItem("token")
+        let channel = localStorage.getItem("channel")
+
+        if (!token) await refreshUser()
+        else if (!channel) storeChannel(await getChannel(token))
+
+        token = localStorage.getItem("token")
+        channel = localStorage.getItem("channel")
+
+        client = new Client({
+          channels: [channel],
+          identity: {
+            username: "Charla",
+            password: token,
+          },
+        })
+
+        client.on("connected", () => console.log("Connected to Twitch"))
+
+        client.on("message", (_, user, message) => {
+          appendMessage({ id: user.username, message })
+        })
+
+        client.connect()
+      }
+
+      const appendMessage = ({ id, message }) => {
+        const p = document.createElement("p")
+        p.innerText = `<${id}>: ${message}`
+
+        document.body.appendChild(p)
+        window.scrollTo(0, document.body.scrollHeight)
+      }
+
+      const removeLoadingText = () => {
+        document.getElementById("loading-text").style.display = "none"
+      }
+
+      const cleanUpTexts = () => {
+        document.querySelectorAll("p").forEach((element) => {
+          element.remove()
+        })
+      }
+
+      const main = async () => {
+        await init()
+        removeLoadingText()
+
+        setInterval(cleanUpTexts, 1000 * 60 * 5)
+      }
+
+      main()
+    </script>
   </body>
 </html>

@@ -13,6 +13,7 @@
   font-style: normal;
 }
 
+
 * {
   padding: 0;
   margin: 0;
@@ -26,4 +27,6 @@ html,body {
 body {
   font-family: "Minecraft", "NeoDunggeunmo", "sans-serif";
   font-weight: 400;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 0.2rem 0.2rem 0.2rem 0.2rem;
 }
