@@ -74,6 +74,7 @@
         client.on("connected", () => console.log("Connected to Twitch"))
 
         client.on("message", (_, user, message) => {
+          console.log(user, message)
           appendMessage({ id: user.username, message })
         })
 

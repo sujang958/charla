@@ -1,13 +1,14 @@
 @import "./base.css";
 
 body {
+  height: min-content;
   color: #fff;
   /* ho, ve */
-  padding: 1rem 0.2rem;
+  padding: 1rem;
 }
 
 p {
-  font-size: 0.6rem;
+  font-size: 1.6rem;
   word-break: break-all;
   margin-bottom: 0.1rem;
   line-height: 1.5;
