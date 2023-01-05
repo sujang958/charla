@@ -4,9 +4,9 @@
   "main": "./out/app.js",
   "license": "MIT",
   "scripts": {
-    "start": "yarn format && yarn build:src && electron .",
+    "start": "yarn build:src && electron .",
     "format": "prettier ./src ./screens/**/*.{css,html}",
-    "build:src": "tsc",
+    "build:src": "yarn format && tsc",
     "build:app": "yarn build:src && electron-builder --win --x64"
   },
   "devDependencies": {

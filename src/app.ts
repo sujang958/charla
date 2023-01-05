@@ -3,7 +3,7 @@ import { existsSync, readFileSync, writeFileSync } from "fs"
 import { join } from "path"
 
 const createChatWindow = () => {
-  const sizeFilePath = join(__dirname, "../stores/size.json")
+  const sizeFilePath = join(app.getPath("userData"), "charla-size.json")
   const { width, height } = existsSync(sizeFilePath)
     ? JSON.parse(readFileSync(sizeFilePath).toString("utf8"))
     : { width: 800, height: 400 }
