@@ -1,15 +1,34 @@
 import { app, BrowserWindow, ipcMain } from "electron"
+import { existsSync, readFileSync, writeFileSync } from "fs"
+import { join } from "path"
 
 const createChatWindow = () => {
+  const sizeFilePath = join(__dirname, "../stores/size.json")
+  const { width, height } = existsSync(sizeFilePath)
+    ? JSON.parse(readFileSync(sizeFilePath).toString("utf8"))
+    : { width: 800, height: 400 }
+
+  // 800x400 default
+
   const win = new BrowserWindow({
-    width: 800,
-    height: 400,
+    width,
+    height,
     frame: false,
     transparent: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
     },
+  })
+
+  win.on("resized", () => {
+    const [width, height] = win.getSize()
+
+    console.log(width, height)
+
+    writeFileSync(sizeFilePath, JSON.stringify({ width, height }))
+
+    console.log(sizeFilePath)
   })
 
   ipcMain.handle(
