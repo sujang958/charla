@@ -24,11 +24,7 @@ const createChatWindow = () => {
   win.on("resized", () => {
     const [width, height] = win.getSize()
 
-    console.log(width, height)
-
     writeFileSync(sizeFilePath, JSON.stringify({ width, height }))
-
-    console.log(sizeFilePath)
   })
 
   ipcMain.handle(
