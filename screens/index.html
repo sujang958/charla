@@ -10,6 +10,17 @@
   <body>
     <p id="loading-text">&lt;omom1972&gt;: 로딩중...</p>
 
+    <div id="setting-window">
+      <div id="setting-window-child">
+        <div id="close-button">x</div>
+        <div class="input-container">
+          <p>폰트 크기</p>
+          <input type="number" id="font-size-input" />
+          <p id="test-text">&lt;omom1972&gt; 테스트</p>
+        </div>
+      </div>
+    </div>
+
     <script>
       const { ipcRenderer } = require("electron")
       const { Client } = require("tmi.js")
@@ -84,6 +95,7 @@
       const appendMessage = ({ id, message }) => {
         const p = document.createElement("p")
         p.innerText = `<${id}>: ${message}`
+        p.style.fontSize = `${getFontSize()}rem`
 
         document.body.appendChild(p)
         window.scrollTo(0, document.body.scrollHeight)
@@ -99,9 +111,51 @@
         })
       }
 
+      const fontSizeInput = document.getElementById("font-size-input")
+      const testText = document.getElementById("test-text")
+      const settingWindow = document.getElementById("setting-window")
+      const closeButton = document.getElementById("close-button")
+
+      const FONT_KEY = "font"
+
+      const setTestFontSize = (value) => {
+        testText.style.fontSize = `${value}rem`
+      }
+
+      const storeFontSize = (value) => {
+        localStorage.setItem(FONT_KEY, String(value))
+      }
+
+      const getFontSize = () => {
+        const font = localStorage.getItem(FONT_KEY)
+
+        if (font) return font
+
+        localStorage.setItem(FONT_KEY, "1.6")
+
+        return "1.6"
+      }
+
+      fontSizeInput.addEventListener("input", () => {
+        console.log(fontSizeInput.value)
+
+        setTestFontSize(fontSizeInput.value)
+        storeFontSize(fontSizeInput.value)
+      })
+
+      closeButton.addEventListener("click", () => {
+        settingWindow.style.display = "none"
+      })
+
+      ipcRenderer.on("open-setting", () => {
+        settingWindow.style.display = "flex"
+      })
+
       const main = async () => {
         await init()
         removeLoadingText()
+        setTestFontSize(getFontSize())
+        fontSizeInput.value = getFontSize()
 
         setInterval(cleanUpTexts, 1000 * 60 * 5)
       }

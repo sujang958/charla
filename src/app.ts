@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron"
+import { app, BrowserWindow, globalShortcut, ipcMain } from "electron"
 import { existsSync, readFileSync, writeFileSync } from "fs"
 import { join } from "path"
 
@@ -53,10 +53,13 @@ const createChatWindow = () => {
       })
   )
 
+  globalShortcut.register("F10", () => {
+    win.webContents.send("open-setting")
+  })
+
   win.loadFile("screens/index.html")
 }
 
 app.whenReady().then(() => {
   createChatWindow()
-  // createSettingWindow()
 })
