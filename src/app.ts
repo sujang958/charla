@@ -1,8 +1,11 @@
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron"
 import { existsSync, readFileSync, writeFileSync } from "fs"
 import { join } from "path"
+import { Client } from "tmi.js"
 
 const createChatWindow = () => {
+  let client: null | Client = null
+
   const sizeFilePath = join(app.getPath("userData"), "charla-size.json")
   const { width, height } = existsSync(sizeFilePath)
     ? JSON.parse(readFileSync(sizeFilePath).toString("utf8"))
@@ -17,6 +20,7 @@ const createChatWindow = () => {
     transparent: true,
     webPreferences: {
       nodeIntegration: true,
+      nodeIntegrationInWorker: true,
       contextIsolation: false,
     },
   })
@@ -52,6 +56,26 @@ const createChatWindow = () => {
         })
       })
   )
+
+  ipcMain.handle("request-message", (_, { channel, token }) => {
+    client = new Client({
+      channels: [channel],
+      identity: {
+        password: token,
+        username: "Charla",
+      },
+    })
+
+    client.say(channel, "Charla가 세팅됐어요!")
+
+    client.on("connected", () => console.log("Connected to Twitch"))
+
+    client.on("message", (_, { username }, message) => {
+      win.webContents.send("message", { id: username, message })
+    })
+
+    client.connect()
+  })
 
   globalShortcut.register("F10", () => {
     win.webContents.send("open-setting")

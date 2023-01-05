@@ -23,9 +23,6 @@
 
     <script>
       const { ipcRenderer } = require("electron")
-      const { Client } = require("tmi.js")
-
-      let client = null
 
       const getChannel = async (token) => {
         const headers = new Headers()
@@ -74,22 +71,7 @@
         const token = localStorage.getItem("token")
         const channel = localStorage.getItem("channel")
 
-        client = new Client({
-          channels: [channel],
-          identity: {
-            username: "Charla",
-            password: token,
-          },
-        })
-
-        client.on("connected", () => console.log("Connected to Twitch"))
-
-        client.on("message", (_, user, message) => {
-          console.log(user, message)
-          appendMessage({ id: user.username, message })
-        })
-
-        client.connect()
+        ipcRenderer.invoke("request-message", { token, channel })
       }
 
       const appendMessage = ({ id, message }) => {
@@ -100,6 +82,10 @@
         document.body.appendChild(p)
         window.scrollTo(0, document.body.scrollHeight)
       }
+
+      ipcRenderer.on("message", (_, message) => {
+        appendMessage(message)
+      })
 
       const removeLoadingText = () => {
         document.getElementById("loading-text").style.display = "none"
@@ -137,8 +123,6 @@
       }
 
       fontSizeInput.addEventListener("input", () => {
-        console.log(fontSizeInput.value)
-
         setTestFontSize(fontSizeInput.value)
         storeFontSize(fontSizeInput.value)
       })
@@ -154,10 +138,12 @@
       const main = async () => {
         await init()
         removeLoadingText()
+
         setTestFontSize(getFontSize())
         fontSizeInput.value = getFontSize()
 
         setInterval(cleanUpTexts, 1000 * 60 * 5)
+        setInterval(validateStoredUser, 1000 * 60 * 60)
       }
 
       main()
