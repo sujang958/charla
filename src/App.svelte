@@ -1,10 +1,6 @@
 <script lang="ts">
   import tmi from "tmi.js"
-
-  const DEFAULT_FORMAT = "%username%: %message%"
-
-  localStorage.messageFormat ??= DEFAULT_FORMAT
-  localStorage.fontSize ??= 3
+  import Preferences from "./lib/Preferences.svelte"
 
   const client = new tmi.Client({
     options: { debug: true },
@@ -20,7 +16,7 @@
 
   client.on("message", (_, tags, message, __) => {
     const formattedMessage = (
-      String(localStorage.messageFormat) ?? DEFAULT_FORMAT
+      localStorage.getItem("messageFormat") ?? "%username%: %message%"
     )
       .replace("%username%", tags.username)
       .replace("%message%", message)
@@ -29,7 +25,7 @@
   })
 </script>
 
-<main class="w-full h-screen bg-black/5 text-white font-pretendard relative">
+<main class="w-full h-screen bg-black/5 text-white relative">
   <div class="fixed bottom-4 right-4">
     <svg
       data-tauri-drag-region
@@ -53,3 +49,7 @@
     {/each}
   </div>
 </main>
+
+<Preferences />
+
+<!-- TODO: add option window that can modify format and font size-->
