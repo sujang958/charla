@@ -1,15 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte"
 
-  const DEFAULT_FORMAT = "%username%: %message%"
+  let shown = false
 
-  localStorage.messageFormat ??= DEFAULT_FORMAT
-  localStorage.fontSize ??= 3
-
-  let shown = true
-
-  let messageFormat
-  let fontSize
+  let messageFormat: string
+  let fontSize: string
 
   document.addEventListener("keypress", (event) => {
     if (event.key !== "k") return
@@ -17,11 +12,16 @@
   })
 
   onMount(() => {
-    messageFormat = localStorage.getItem("messageFormat")
-    fontSize = localStorage.getItem("fontSize")
+    localStorage.messageFormat ??= "%username%: %message%"
+    localStorage.fontSize ??= "1.5"
+
+    messageFormat =
+      localStorage.getItem("messageFormat") ?? "%username%: %message%"
+    fontSize = localStorage.getItem("fontSize") ?? "1.5"
   })
 
-  $: localStorage
+  $: if (messageFormat) localStorage.setItem("messageFormat", messageFormat)
+  $: if (fontSize) localStorage.setItem("fontSize", fontSize)
 </script>
 
 {#if shown}

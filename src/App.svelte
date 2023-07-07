@@ -10,7 +10,7 @@
     channels: ["omom1972"],
   })
 
-  let messages: string[] = []
+  let messages: { message: string; size: number }[] = []
 
   client.connect().catch(console.error)
 
@@ -21,7 +21,15 @@
       .replace("%username%", tags.username)
       .replace("%message%", message)
 
-    messages = [...messages, formattedMessage]
+    console.log(formattedMessage)
+
+    messages = [
+      ...messages,
+      {
+        message: formattedMessage,
+        size: Number(localStorage.getItem("fontSize") ?? "1.5"),
+      },
+    ]
   })
 </script>
 
@@ -42,10 +50,9 @@
       />
     </svg>
   </div>
-  <div class="flex flex-col gap-y-2 p-2 w-full">
-    <p class="text-2xl font-bold">Hello!</p>
-    {#each messages as message}
-      <p class="text-xl font-bold text-stroke">{message}</p>
+  <div class="flex flex-col gap-y-0.5 p-2 w-full">
+    {#each messages as { message, size }}
+      <p class={`text-[${size}rem] font-bold`}>{message}</p>
     {/each}
   </div>
 </main>
