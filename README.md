@@ -1,6 +1,7 @@
-# Charla
+# Tauri + Svelte + Typescript
 
-> 마인크래프트 방송인들을 위한 트위치 채팅 디스플레이어.
+This template should help get you started developing with Tauri, Svelte and TypeScript in Vite.
 
-트위치 채팅창을 마인크래프트 채팅 스타일로 바꿔드립니다.
+## Recommended IDE Setup
 
+[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).

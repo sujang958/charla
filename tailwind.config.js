@@ -1,12 +1,9 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ["./screens/**/*.html"],
+export default {
+ content: ['./src/**/*.{html,js,svelte,ts}', './index.html'],
   theme: {
-    extend: {
-      fontFamily: {
-        minecraft: ["Minecraft", "NeoDunggeunmo", "sans-serif"],
-      },
-    },
+    extend: {},
   },
   plugins: [],
 }
+

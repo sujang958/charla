@@ -1,50 +1,34 @@
 {
   "name": "charla",
-  "version": "1.3.0",
-  "main": "./out/app.js",
-  "license": "MIT",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "yarn build:src && electron .",
-    "format": "prettier --write ./src ./screens/**/*.{css,html}",
-    "build:src": "yarn format && tsc",
-    "build:app": "yarn build:src && electron-builder --win --x64",
-    "build:css": "tailwindcss -i ./screens/css/base.css -o ./screens/css/out.css --watch"
-  },
-  "devDependencies": {
-    "@types/node": "^18.11.18",
-    "@types/tmi.js": "^1.8.2",
-    "electron": "^22.0.0",
-    "electron-builder": "^23.6.0",
-    "prettier": "^2.8.1",
-    "tailwindcss": "^3.2.6",
-    "typescript": "^4.9.4"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "tauri": "tauri"
   },
   "dependencies": {
-    "find-free-ports": "^3.0.0",
-    "tmi.js": "^1.8.5",
-    "vite": "^4.1.1"
+    "@kararty/dank-twitch-irc": "^6.0.0",
+    "@tauri-apps/api": "^1.4.0",
+    "tmi.js": "^1.8.5"
   },
-  "author": {
-    "name": "sujang958"
-  },
-  "build": {
-    "productName": "Charla",
-    "asar": true,
-    "win": {
-      "target": "nsis",
-      "icon": "./resources/icon.png"
-    },
-    "nsis": {
-      "oneClick": true,
-      "shortcutName": "Charla",
-      "uninstallDisplayName": "Charla 제거 프로그램"
-    },
-    "directories": {
-      "output": "./dist/",
-      "app": "./"
-    }
-  },
-  "browser": {
-    "fs": false
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.0.0",
+    "@tauri-apps/cli": "^1.4.0",
+    "@tsconfig/svelte": "^3.0.0",
+    "@types/node": "^18.7.10",
+    "@types/tmi.js": "^1.8.3",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.25",
+    "svelte": "^3.54.0",
+    "svelte-check": "^3.0.0",
+    "svelte-preprocess": "^5.0.0",
+    "tailwindcss": "^3.3.2",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.5",
+    "vite": "^4.2.1"
   }
 }
