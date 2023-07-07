@@ -17,22 +17,6 @@
   display: none;
 }
 
-* {
-  padding: 0;
-  margin: 0;
-
-  outline: none;
-  border: none;
-}
-
-html,
-body {
-  width: 100%;
-  height: 100%;
-}
-
-body {
-  font-family: "Minecraft", "NeoDunggeunmo", "sans-serif";
-  font-weight: 400;
-  background-color: rgba(0, 0, 0, 0.2);
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

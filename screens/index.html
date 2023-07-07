@@ -4,149 +4,61 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/out.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
     <title>Charla</title>
   </head>
-  <body>
-    <p id="loading-text">&lt;omom1972&gt;: 로딩중...</p>
+  <body class="bg-black/20 text-white font-minecraft p-2.5">
+    <p id="loading-text" class="text-xl">&lt;omom1972&gt;: 로딩중...</p>
 
-    <div id="setting-window">
-      <div id="setting-window-child">
-        <div id="close-button">x</div>
-        <div class="input-container">
-          <p>폰트 크기</p>
-          <input type="number" id="font-size-input" />
+    <div
+      id="setting-window"
+      class="hidden w-full h-full fixed top-0 left-0 right-0 bottom-0 flex flex-col items-center justify-center"
+    >
+      <div
+        id="setting-window-child"
+        class="relative bg-white text-black py-2 px-4"
+      >
+        <div
+          id="close-button"
+          class="cursor-pointer absolute bg-black rounded-full p-1.5 -top-4 -right-4"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="white"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </div>
+        <div class="py-4">
+          <p class="text-xl">폰트 크기</p>
+          <input
+            type="number"
+            id="font-size-input"
+            class="outline-none py-1 px-2 appearance-none border border-black/20 rounded-lg mt-1"
+          />
+          <div class="py-2"></div>
           <p id="test-text">&lt;omom1972&gt; 테스트</p>
+        </div>
+        <div class="py-4">
+          <p class="text-xl">배경색</p>
+          <div class="color-picker"></div>
         </div>
       </div>
     </div>
 
-    <script>
-      const { ipcRenderer } = require("electron")
-
-      const getChannel = async (token) => {
-        const headers = new Headers()
-        headers.append("Authorization", `OAuth ${token}`)
-
-        const res = await fetch("https://id.twitch.tv/oauth2/validate", {
-          headers,
-        })
-        const data = await res.json()
-
-        return data.login
-      }
-
-      const storeUser = ({ token, channel }) => {
-        storeToken(token)
-        storeChannel(channel)
-      }
-
-      const storeToken = (token) => localStorage.setItem("token", token)
-      const storeChannel = (channel) => localStorage.setItem("channel", channel)
-
-      const refreshUser = async () => {
-        const token = await ipcRenderer.invoke("sign-in")
-        const channel = await getChannel(token)
-        storeUser({ token, channel })
-      }
-
-      const validateStoredUser = async () => {
-        const token = localStorage.getItem("token")
-        const headers = new Headers()
-        headers.append("Authorization", `OAuth ${token}`)
-
-        const res = await fetch("https://id.twitch.tv/oauth2/validate", {
-          headers,
-        })
-        const data = await res.json()
-
-        if ("message" in data) return false
-
-        return true
-      }
-
-      const init = async () => {
-        if (!(await validateStoredUser())) await refreshUser()
-
-        const token = localStorage.getItem("token")
-        const channel = localStorage.getItem("channel")
-
-        ipcRenderer.invoke("request-message", { token, channel })
-      }
-
-      const appendMessage = ({ id, message }) => {
-        const p = document.createElement("p")
-        p.innerText = `<${id}>: ${message}`
-        p.style.fontSize = `${getFontSize()}rem`
-
-        document.body.appendChild(p)
-        window.scrollTo(0, document.body.scrollHeight)
-      }
-
-      ipcRenderer.on("message", (_, message) => {
-        appendMessage(message)
-      })
-
-      const removeLoadingText = () => {
-        document.getElementById("loading-text").style.display = "none"
-      }
-
-      const cleanUpTexts = () => {
-        document.querySelectorAll("p").forEach((element) => {
-          element.remove()
-        })
-      }
-
-      const fontSizeInput = document.getElementById("font-size-input")
-      const testText = document.getElementById("test-text")
-      const settingWindow = document.getElementById("setting-window")
-      const closeButton = document.getElementById("close-button")
-
-      const FONT_KEY = "font"
-
-      const setTestFontSize = (value) => {
-        testText.style.fontSize = `${value}rem`
-      }
-
-      const storeFontSize = (value) => {
-        localStorage.setItem(FONT_KEY, String(value))
-      }
-
-      const getFontSize = () => {
-        const font = localStorage.getItem(FONT_KEY)
-
-        if (font) return font
-
-        localStorage.setItem(FONT_KEY, "1.6")
-
-        return "1.6"
-      }
-
-      fontSizeInput.addEventListener("input", () => {
-        setTestFontSize(fontSizeInput.value)
-        storeFontSize(fontSizeInput.value)
-      })
-
-      closeButton.addEventListener("click", () => {
-        settingWindow.style.display = "none"
-      })
-
-      ipcRenderer.on("open-setting", () => {
-        settingWindow.style.display = "flex"
-      })
-
-      const main = async () => {
-        await init()
-        removeLoadingText()
-
-        setTestFontSize(getFontSize())
-        fontSizeInput.value = getFontSize()
-
-        setInterval(cleanUpTexts, 1000 * 60 * 5)
-        setInterval(validateStoredUser, 1000 * 60 * 60)
-      }
-
-      main()
-    </script>
+    <script src="js/app.js"></script>
   </body>
 </html>
