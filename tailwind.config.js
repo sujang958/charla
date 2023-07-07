@@ -2,7 +2,11 @@
 export default {
  content: ['./src/**/*.{html,js,svelte,ts}', './index.html'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'pretendard': ["Pretendard Variable", "Noto Sans KR", "sans-serif"]
+      }
+    },
   },
   plugins: [],
 }
