@@ -1,6 +1,8 @@
 <script lang="ts">
   import tmi from "tmi.js"
   import Preferences from "./lib/Preferences.svelte"
+  import {color} from "./stores/color"
+  
 
   const client = new tmi.Client({
     options: { debug: true },
@@ -33,7 +35,7 @@
   })
 </script>
 
-<main class="w-full h-screen bg-black/5 text-white relative">
+<main class={`w-full h-screen text-white relative`} style={`background-color: ${$color};`}>
   <div class="fixed bottom-4 right-4">
     <svg
       data-tauri-drag-region

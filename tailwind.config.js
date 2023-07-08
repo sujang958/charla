@@ -1,15 +1,13 @@
 /** @type {import('tailwindcss').Config} */
-export default {
- content: ['./src/**/*.{html,js,svelte,ts}', './index.html'],
+module.exports = {
+  content: [
+    './index.html',
+    './src/**/*.{ts,svelte}',
+	],
   theme: {
-    extend: {
-      fontFamily: {
-        'pretendard': ["Pretendard Variable", "Noto Sans KR", "sans-serif"]
-      }
-    },
+  fontFamily: {
+    pretendard: ["Pretendard Variable", "Noto Sans KR", "sans-serif"]
+  }
   },
-  plugins: [
-    require("@tailwindcss/forms")
-  ],
+  plugins: [require("@tailwindcss/forms")],
 }
-
