@@ -2,13 +2,14 @@
   import tmi from "tmi.js"
   import Preferences from "./lib/Preferences.svelte"
   import { color } from "./stores/color"
+  import { channel } from "./stores/channel"
 
   const client = new tmi.Client({
     options: { debug: true },
     identity: {
       username: "justinfan6969",
     },
-    channels: ["omom1972"],
+    channels: [$channel],
   })
 
   let messages: { message: string; size: number }[] = []
@@ -37,7 +38,7 @@
 </script>
 
 <main
-  class={`w-full min-h-screen text-white relative`}
+  class={`relative min-h-screen w-full text-white`}
   style={`background-color: ${$color};`}
 >
   <div class="fixed bottom-4 right-4">
@@ -46,7 +47,7 @@
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      class="w-5 h-5 fill-black/5 transition duration-200 hover:fill-neutral-900/100 cursor-pointer"
+      class="h-5 w-5 cursor-pointer fill-black/5 transition duration-200 hover:fill-neutral-900/100"
     >
       <path
         data-tauri-drag-region
@@ -56,7 +57,10 @@
       />
     </svg>
   </div>
-  <div class="flex flex-col gap-y-0.5 p-2 w-full" bind:this={messageContainer}>
+  <div class="flex w-full flex-col gap-y-0.5 p-2" bind:this={messageContainer}>
+    {#if messages.length < 1}
+      {$channel}에 연결됨
+    {/if}
     {#each messages as { message, size }}
       <p class={`text-[${size}rem] font-bold`}>{message}</p>
     {/each}
