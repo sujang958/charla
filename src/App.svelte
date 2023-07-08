@@ -60,5 +60,3 @@
 </main>
 
 <Preferences />
-
-<!-- TODO: add option window that can modify format and font size-->

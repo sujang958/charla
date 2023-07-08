@@ -64,7 +64,8 @@
         on:click={() => (shown = false)}
           class="border border-neutral-950 text-sm text-black font-semibold rounded-lg px-4 py-1.5"
           >닫기</button
-        ><button
+        >
+        <button
         on:click={() => (shown = false)}
           class="border border-neutral-950 bg-neutral-950 text-sm text-white font-semibold rounded-lg px-4 py-1.5"
           >저장</button
