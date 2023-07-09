@@ -1,28 +1,19 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { color } from "@/stores/color";
+  import { preferences } from "@/stores/preferences"
+  import { onMount } from "svelte"
 
-  let shown = false;
+  let shown = false
 
-  let messageFormat: string;
-  let fontSize: string;
+  let channelId = ""
 
   document.addEventListener("keypress", (event) => {
-    if (event.key !== "k") return;
-    shown = true;
-  });
+    if (event.key !== "k") return
+    shown = true
+  })
 
   onMount(() => {
-    localStorage.messageFormat ??= "%username%: %message%";
-    localStorage.fontSize ??= "1.5";
-
-    messageFormat =
-      localStorage.getItem("messageFormat") ?? "%username%: %message%";
-    fontSize = localStorage.getItem("fontSize") ?? "1.5";
-  });
-
-  $: if (messageFormat) localStorage.setItem("messageFormat", messageFormat);
-  $: if (fontSize) localStorage.setItem("fontSize", fontSize);
+    channelId = $preferences.channel
+  })
 </script>
 
 {#if shown}
@@ -37,7 +28,7 @@
           텍스트 크기
           <input
             type="number"
-            bind:value={fontSize}
+            bind:value={$preferences.fontSize}
             class="w-min rounded-lg border-neutral-300 px-2 py-0.5 text-base"
           />
         </label>
@@ -45,7 +36,7 @@
           메시지 형식
           <input
             type="text"
-            bind:value={messageFormat}
+            bind:value={$preferences.messageFormat}
             class="w-min rounded-lg border-neutral-300 px-2 py-0.5 text-base"
           />
         </label>
@@ -53,7 +44,15 @@
           배경 색깔
           <input
             type="text"
-            bind:value={$color}
+            bind:value={$preferences.backgroundColor}
+            class="w-min rounded-lg border-neutral-300 px-2 py-0.5 text-base"
+          />
+        </label>
+        <label class="flex flex-col gap-y-1 text-sm">
+          채널 ID
+          <input
+            type="text"
+            bind:value={channelId}
             class="w-min rounded-lg border-neutral-300 px-2 py-0.5 text-base"
           />
         </label>
@@ -66,7 +65,10 @@
           >닫기</button
         >
         <button
-          on:click={() => (shown = false)}
+          on:click={() => {
+            $preferences.channel = channelId
+            shown = false
+          }}
           class="rounded-lg border border-neutral-950 bg-neutral-950 px-4 py-1.5 text-sm font-semibold text-white"
           >저장</button
         >
