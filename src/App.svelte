@@ -16,6 +16,8 @@
     try {
       await client.disconnect()
     } finally {
+      if (client.readyState() !== "CLOSED") return
+
       client = new tmi.Client({
         options: { debug: true },
         identity: {
