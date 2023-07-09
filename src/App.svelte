@@ -1,7 +1,7 @@
 <script lang="ts">
   import tmi from "tmi.js"
   import Preferences from "./lib/Preferences.svelte"
-  import { onMount } from "svelte"
+  import { onDestroy, onMount } from "svelte"
   import { preferences, type PreferencesType } from "./stores/preferences"
 
   let client = new tmi.Client({
@@ -14,7 +14,6 @@
 
   const connect = async (channel: string) => {
     try {
-      messages = []
       await client.disconnect()
     } finally {
       client = new tmi.Client({
@@ -33,22 +32,23 @@
           .replace("%username%", tags.username)
           .replace("%message%", message)
 
-        messages = [
-          ...(messages.length > 100 ? [] : messages),
-          {
-            message: formattedMessage,
-            size: Number(localStorage.getItem("fontSize") ?? "1.5"),
-          },
-        ]
-        // messageContainer.scrollTo(0, messageContainer.scrollHeight)
+        const p = document.createElement("p")
+        p.innerText = formattedMessage
+        p.className = "w-full break-words font-bold"
+        p.style.fontSize = `${$preferences?.fontSize ?? "1.5"}rem`
+
+        if (messageContainer.childNodes.length > 200)
+          messageContainer.innerHTML = ""
+
+        messageContainer.appendChild(p)
+        window.scrollTo(0, messageContainer.scrollHeight)
       })
     }
   }
 
   $: if ($preferences) connect($preferences.channel)
 
-  let messages: { message: string; size: number }[] = []
-  let messageContainer: HTMLDivElement
+  let messageContainer: HTMLElement
 
   onMount(() => {
     localStorage.preferences ??= JSON.stringify({
@@ -60,11 +60,16 @@
 
     $preferences = JSON.parse(localStorage.preferences)
   })
+
+  onDestroy(() => {
+    client.disconnect()
+  })
 </script>
 
 {#if $preferences}
   <main
-    class={`relative min-h-screen w-full text-white`}
+    bind:this={messageContainer}
+    class="relative flex h-full min-h-screen w-full flex-col gap-y-0.5 p-2 text-white"
     style={`background-color: ${$preferences.backgroundColor};`}
   >
     <div class="fixed bottom-4 right-4">
@@ -82,19 +87,6 @@
           clip-rule="evenodd"
         />
       </svg>
-    </div>
-    <div
-      class="flex w-full flex-col gap-y-0.5 p-2"
-      bind:this={messageContainer}
-    >
-      {#if messages.length < 1}
-        {$preferences.channel}에 연결됨
-      {/if}
-      {#each messages as { message, size }}
-        <p class="font-bold" style="font-size: {$preferences.fontSize};">
-          {message}
-        </p>
-      {/each}
     </div>
   </main>
 
